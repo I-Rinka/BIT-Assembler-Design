@@ -69,8 +69,8 @@ OutPutIntString proc stdcall base:dword,len:dword
 OutPutIntString endp
 
 
-;输入A串的基地址和长度，输入C串的基地址，输入一个整形数，它会自动使用这个整型数与A串相乘并合并，返回本次运算的最高位的偏移量
-ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:DWORD
+;输入A串的基地址和长度，输入C串的基地址，输入一个整形数，它会自动使用这个整型数与A串相乘并合并，返回本次运算是否进位
+ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:byte
 	local len:dword
 	mov esi,dwLenA
 	mov len,esi
@@ -103,6 +103,7 @@ ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:DWO
 		cmp cl,10;大于等于10时carry，小于10时不carry
 		jl else_carry
 		if_carry:
+			xor eax,eax
 			mov al,cl
 			mov dl,10
 			div dl
@@ -112,7 +113,7 @@ ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:DWO
 			;esi就是C串此位置，现在要存下一位置
 			mov ebx,esi
 			inc ebx
-			mov [ebx],al
+			add [ebx],al
 
 
 
@@ -132,9 +133,8 @@ ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:DWO
 	end_while_LenA_gt0:
 
 	xor eax,eax
-	mov al,dl
-	add eax,dwLenA
-	add eax,lpBaseC
+	mov al,dl ;最高位有进位
+
 	ret 4*4
 ComputeIntString endp
 
@@ -159,7 +159,7 @@ main	proc
 	while_ebx_ge_szB:cmp ebx,offset szB
 	jl end_while_ebx_ge_szB
 		push esi
-		push ebx
+		push ebx ;ebx指向b串的末尾一个数
 
 		invoke ComputeIntString,esi,offset szA,lenA,[ebx]
 
@@ -172,7 +172,9 @@ main	proc
 	end_while_ebx_ge_szB:
 
 
-	sub eax,offset szC
+	add eax,lenA
+	add eax,lenB
+	dec eax
 	
 	invoke	OutPutIntString,offset szC,eax ;现在似乎就输出长度有问题
 
