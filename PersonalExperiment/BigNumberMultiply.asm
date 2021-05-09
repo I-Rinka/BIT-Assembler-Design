@@ -9,6 +9,8 @@ scanf proto C: ptr sbyte,: VARARG
 szSingleInt	BYTE '%d',0
 szString BYTE '%s',0
 
+szErrorInfo BYTE 'Error Input! Please make sure you input a right number string!',0Dh,0Ah,0
+
 szA BYTE 200 DUP(0)
 szB BYTE 200 DUP(0)
 szC BYTE 400 DUP(0)
@@ -115,8 +117,6 @@ ComputeIntString proc	stdcall lpBaseC:DWORD,lpBaseA:DWORD,dwLenA:DWORD,dwNum:byt
 			inc ebx
 			add [ebx],al
 
-
-
 			mul dl ;al现在存了十位部分
 			sub cl,al
 
@@ -141,14 +141,30 @@ ComputeIntString endp
 main	proc
 	local lenA:DWORD,lenB:DWORD
 	invoke scanf,addr szString,addr szA
-	;invoke printf,addr szString,addr szA'
-	invoke scanf,addr szString,addr szB
 
 	invoke ScanString,offset szA
 	mov lenA,eax
-	
+
+	;判断输入是否合法
+	cmp eax,0
+	jge else_inputA_error
+	if_inputA_error:
+		invoke printf,addr szErrorInfo
+		jmp error_exit1
+	else_inputA_error:
+
+	invoke scanf,addr szString,addr szB
+
 	invoke	ScanString,offset szB
 	mov lenB,eax
+
+	;判断输入是否合法
+	cmp eax,0
+	jge else_inputB_error
+	if_inputB_error:
+		invoke printf,addr szErrorInfo
+		jmp error_exit1
+	else_inputB_error:
 
 	;维护一个指向B最末尾数字的一个指针
 	mov ebx,offset szB
@@ -171,14 +187,16 @@ main	proc
 	jmp while_ebx_ge_szB
 	end_while_ebx_ge_szB:
 
-
 	add eax,lenA
 	add eax,lenB
 	dec eax
 	
-	invoke	OutPutIntString,offset szC,eax ;现在似乎就输出长度有问题
+	invoke	OutPutIntString,offset szC,eax
 
 	ret
+	error_exit1:
+		mov eax,-1
+		ret
 main endp
 
 end main
