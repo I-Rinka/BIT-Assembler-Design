@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="BigNumberMultiply.asm">
+    <MASM Include="Difference.asm">
       <Filter>源文件</Filter>
     </MASM>
   </ItemGroup>
