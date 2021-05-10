@@ -1,0 +1,12 @@
+﻿  Assembling Difference.asm...
+  LINK : 已指定 /LTCG，但不需要生成代码；从链接命令行中移除 /LTCG 以提高链接器性能
+Difference.obj : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+user32.lib(user32.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+comdlg32.lib(comdlg32.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+msvcrt.lib(msvcrt.dll) : error LNK2026: 模块对于 SAFESEH 映像是不安全的。
+C:\Users\I_Rin\source\repos\BIT-Assembly-Interface-Design\PersonalExperiment\Release\PersonalExperiment.exe : fatal error LNK1281: 无法生成 SAFESEH 映像。

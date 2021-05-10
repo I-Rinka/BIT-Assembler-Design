@@ -20,6 +20,7 @@ int main() {
 	pFile = fopen_s(&stream1, buffer1, "r");
 	pFile = fopen_s(&stream2, buffer2, "r");
 
+fopen()
 
 	int judge = 0;
 	int line = 0;
