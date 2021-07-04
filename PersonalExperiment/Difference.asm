@@ -18,7 +18,7 @@ MessageBoxA proto stdcall:dword,:dword,:dword,:dword
 fopen proto c:dword,:dword
 fgets proto c:dword,:dword,:dword
 fclose proto c:dword
-strcmp proto c:dword,:dword
+strlen proto c:dword
 sprintf proto c:dword,:dword,:dword
 exit proto c:dword
 
@@ -29,15 +29,16 @@ puts proto C:ptr sbyte
 
 .data
 
-_szOutStr byte 'aaa %s',0
 _szMsgBoxTitle byte 'Difference!',0
 _szContentIsDifferent byte 'Content is different at line %d',0
 _szNoDifferent byte 'No different!',0
 
-_buffer byte 1000 DUP(0)
-_buffer1 byte 1000 DUP(0)
-_buffer2 byte 1000 DUP(0)
-_bufferSize dword 1000
+BUFFER_SIZE EQU 1000
+
+_buffer byte BUFFER_SIZE DUP(0)
+_buffer1 byte BUFFER_SIZE DUP(0)
+_buffer2 byte BUFFER_SIZE DUP(0)
+_bufferSize dword BUFFER_SIZE
 
 _szRead byte 'r',0
 
@@ -132,13 +133,23 @@ local @file1:dword,@file2:dword,@line:dword,@judge:dword
 		inc @line
 		
 		if_fgets_file2_ne_0:
-		invoke	fgets,addr _buffer2,_bufferSize,@file2
+		invoke strlen,addr _buffer1 
+		inc eax ;eax+1，/0
+		push eax
+		invoke	fgets,addr _buffer2,eax,@file2
 		cmp eax,0
 		je else_fgets_file2_ne_0;提前结束
 			;内层判断
 
-			invoke strcmp,addr _buffer1,addr _buffer2
-			cmp eax,0
+			lea esi,_buffer1
+			lea edi,_buffer2
+
+			pop ecx ;此时栈顶存的时strlen的eax
+			repz cmpsb
+
+			cmp ecx,0
+
+			;cmp eax,0
 			je buffer_equals
 
 				mov @judge,1

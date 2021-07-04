@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="Difference.asm">
+    <MASM Include="hello.asm">
       <Filter>源文件</Filter>
     </MASM>
   </ItemGroup>
